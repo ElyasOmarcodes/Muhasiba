@@ -9,12 +9,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # دلته مو جاوا 17 ته راښکته کړه ځکه کله کله د ګریډل زړې نسخې له 21 سره ستونزه کوي
-      # خو د Kotlin ستونزه مو لاندې په بل سکریپټ حل کړې ده
-      - name: set up JDK 17
+      # دلته مو جاوا ۲۱ کړه ترڅو د invalid source release: 21 ستونزه حل شي
+      - name: set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'zulu'
 
       - name: Install dependencies
@@ -31,7 +30,7 @@ jobs:
           npx cap add android
           npx cap copy android
 
-      # دا هغه نوی ګام دی چې ستاسو د Duplicate Class ستونزه حل کوي
+      # دا برخه د Duplicate Class ستونزه مخکې له مخکې حل کوي
       - name: Fix Kotlin Dependency Conflict
         run: |
           cd android
