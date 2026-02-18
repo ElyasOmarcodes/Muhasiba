@@ -1,0 +1,42 @@
+name: Build Android APK
+on:
+  push:
+    branches: [ main ] # که ستا برانچ main نه وي، دلته یې نوم بدل کړه
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Build Web App
+        run: npm run build
+
+      - name: Sync with Capacitor
+        run: |
+          npx cap init "Mohasiba" "com.elyasomarcodes.muhasiba" --web-dir dist
+          npx cap add android
+          npx cap copy android
+
+      - name: Build Android APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
